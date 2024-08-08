@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   traefik:
     image: traefik
@@ -16,16 +17,17 @@ services:
       - --certificatesresolvers.mytlschallenge.acme.email=${SSL_EMAIL}
       - --certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     volumes:
       - ${Your_Dir}traefik_data:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
+
   n8n:
     image: docker.n8n.io/n8nio/n8n
     restart: always
     ports:
-      - 127.0.0.1:5678:5678
+      - "127.0.0.1:5678:5678"
     labels:
       - traefik.enable=true
       - traefik.http.routers.n8n.rule=Host(`${SUBDOMAIN}.${DOMAIN_NAME}`)
@@ -62,6 +64,7 @@ services:
       - ${Your_Dir}local-files:/files
     depends_on:
       - db
+
   db:
     image: postgres:13-alpine
     restart: always
@@ -71,4 +74,3 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-networks: {}
